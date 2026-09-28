@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RadhaSakhi 🌸</title>
+<title>RadhaSakhi 🌸 — Clinic Portal</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
 <style>
@@ -17,6 +17,7 @@
     --agent-border: #f8bbd0;
     --user-bg: #113f36;
     --text-dark: #2c3e50;
+    --whatsapp-green: #25d366;
   }
   * { box-sizing: border-box; }
   body {
@@ -48,6 +49,27 @@
     font-size: 0.85rem;
     opacity: 0.9;
     font-weight: 400;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .btn-portal {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+  }
+  .btn-portal:hover {
+    background: #fff;
+    color: var(--accent);
   }
   #log {
     flex: 1;
@@ -154,7 +176,7 @@
     margin: 0 auto;
     border-radius: 16px 16px 0 0;
   }
-  input {
+  input[type="text"], input[type="tel"], input[type="email"] {
     flex: 1;
     padding: 0.8rem 1.1rem;
     border: 1px solid var(--border);
@@ -180,6 +202,115 @@
   }
   button:active {
     transform: scale(0.98);
+  }
+
+  /* Modal Styles for Signup / Login */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-card {
+    background: #fff;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 440px;
+    padding: 1.8rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 1rem; right: 1.2rem;
+    background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #888;
+  }
+  .tab-buttons {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.4rem;
+  }
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #777;
+    padding: 0.8rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    border-radius: 0;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+  }
+  .phone-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding-left: 0.8rem;
+    background: #fdfdfd;
+  }
+  .flag-prefix {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #444;
+    margin-right: 0.4rem;
+  }
+  .phone-input-wrapper input {
+    border: none;
+    padding: 0.8rem 0.5rem;
+  }
+  .whatsapp-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    margin-top: 0.4rem;
+    color: #2e7d32;
+    font-weight: 500;
+  }
+  .whatsapp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: #e8f5e9;
+    color: #1b5e20;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .btn-submit-signup {
+    width: 100%;
+    margin-top: 0.8rem;
   }
 
   /* A2UI Component Enhancements */
@@ -211,12 +342,15 @@
     <div class="brand-title">RadhaSakhi 🌸</div>
     <div class="brand-subtitle">A caring digital companion for Dr. Radha's Homeopathy Clinic</div>
   </div>
+  <div class="header-actions">
+    <button class="btn-portal" onclick="openPortalModal()">📝 Signup / Login</button>
+  </div>
 </header>
 
 <div id="log">
   <div class="quick-pills">
-    <div class="pill" onclick="sendPill('I am a Doctor')">👨‍⚕️ Doctor Login</div>
-    <div class="pill" onclick="sendPill('I am a Patient')">🧑 Patient Information</div>
+    <div class="pill" onclick="openPortalModal('doctor')">👨‍⚕️ Doctor Login</div>
+    <div class="pill" onclick="openPortalModal('patient')">🧑 Patient Signup (+91)</div>
     <div class="pill" onclick="sendPill('Generate video for Arnica Montana')">🌿 Remedy Video</div>
     <div class="pill" onclick="sendPill('Check appointment availability')">📅 Appointments</div>
   </div>
@@ -227,10 +361,59 @@
   <button>Send</button>
 </form>
 
+<!-- Registration & Login Portal Modal -->
+<div id="authModal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closePortalModal()">✕</button>
+    <div class="tab-buttons">
+      <button id="tabPatientBtn" class="tab-btn active" onclick="switchTab('patient')">🧑 Patient Signup</button>
+      <button id="tabDoctorBtn" class="tab-btn" onclick="switchTab('doctor')">👩‍⚕️ Doctor Login</button>
+    </div>
+
+    <!-- Patient Form -->
+    <div id="patientTab">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="patName" placeholder="e.g. Ananya Sharma" required>
+      </div>
+      <div class="form-group">
+        <label>Indian Mobile Number (WhatsApp Linked)</label>
+        <div class="phone-input-wrapper">
+          <span class="flag-prefix">🇮🇳 +91</span>
+          <input type="tel" id="patPhone" placeholder="98765 43210" maxlength="10" required>
+        </div>
+      </div>
+      <div class="whatsapp-checkbox">
+        <input type="checkbox" id="patWhatsapp" checked>
+        <label for="patWhatsapp">Link with WhatsApp for intake and follow-up notifications</label>
+      </div>
+      <button class="btn-submit-signup" onclick="handlePatientSignup()">Register Patient Account</button>
+    </div>
+
+    <!-- Doctor Form -->
+    <div id="doctorTab" style="display: none;">
+      <div class="form-group">
+        <label>Doctor Name</label>
+        <input type="text" id="docName" value="Dr. Radha" required>
+      </div>
+      <div class="form-group">
+        <label>Medical License Number</label>
+        <input type="text" id="docLicense" value="HOM-MH-2024-883" required>
+      </div>
+      <div class="form-group">
+        <label>Specialty</label>
+        <input type="text" id="docSpecialty" value="Homeopathy & Chronic Care">
+      </div>
+      <button class="btn-submit-signup" onclick="handleDoctorLogin()">Doctor Sign In</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const log = document.getElementById("log");
 const form = document.getElementById("form");
 const input = document.getElementById("input");
+const authModal = document.getElementById("authModal");
 
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
@@ -248,6 +431,71 @@ function bubble(who) {
 function sendPill(text) {
   input.value = text;
   form.dispatchEvent(new Event("submit"));
+}
+
+function openPortalModal(tab) {
+  if (tab) switchTab(tab);
+  authModal.classList.add("active");
+}
+
+function closePortalModal() {
+  authModal.classList.remove("active");
+}
+
+function switchTab(role) {
+  document.getElementById("tabPatientBtn").classList.toggle("active", role === 'patient');
+  document.getElementById("tabDoctorBtn").classList.toggle("active", role === 'doctor');
+  document.getElementById("patientTab").style.display = role === 'patient' ? 'block' : 'none';
+  document.getElementById("doctorTab").style.display = role === 'doctor' ? 'block' : 'none';
+}
+
+async function handlePatientSignup() {
+  const name = document.getElementById("patName").value.trim();
+  const rawPhone = document.getElementById("patPhone").value.trim();
+  const whatsappLinked = document.getElementById("patWhatsapp").checked;
+
+  if (!rawPhone || rawPhone.length < 10) {
+    alert("Please enter a valid 10-digit Indian mobile number.");
+    return;
+  }
+
+  const phone = "+91 " + rawPhone;
+  try {
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: "patient", name, phone, whatsapp_linked: whatsappLinked })
+    });
+    const data = await res.json();
+    closePortalModal();
+
+    // Auto-send registration context to RadhaSakhi
+    const regMsg = `Hello RadhaSakhi! I am a Patient.\nName: ${data.name || 'Patient'}\nRegistration ID: ${data.registration_id}\nMobile (WhatsApp): ${data.phone}`;
+    sendPill(regMsg);
+  } catch (e) {
+    alert("Signup error: " + e.message);
+  }
+}
+
+async function handleDoctorLogin() {
+  const name = document.getElementById("docName").value.trim();
+  const license_no = document.getElementById("docLicense").value.trim();
+  const specialty = document.getElementById("docSpecialty").value.trim();
+
+  try {
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: "doctor", name, license_no, specialty })
+    });
+    const data = await res.json();
+    closePortalModal();
+
+    const docMsg = `Hello RadhaSakhi! I am Dr. ${data.name}.\nMedical License: ${data.license_no}\nSpecialty: ${specialty}`;
+    sendPill(docMsg);
+  } catch (e) {
+    alert("Doctor login error: " + e.message);
+  }
 }
 
 /* ----------------------------------------------------------------------------

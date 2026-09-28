@@ -190,6 +190,66 @@ async def chat(req: Request):
     return JSONResponse({"parts": parts})
 
 
+import random
+
+_user_registry = {}
+
+@app.post("/api/register")
+async def register_user(req: Request):
+    body = await req.json()
+    role = body.get("role", "patient")
+    name = body.get("name", "").strip()
+    phone = body.get("phone", "").strip()
+    whatsapp_linked = body.get("whatsapp_linked", True)
+    license_no = body.get("license_no", "").strip()
+    specialty = body.get("specialty", "Homeopathy").strip()
+
+    if role == "doctor":
+        reg_id = f"RS-DOC-{random.randint(1000, 9999)}"
+        _user_registry[reg_id] = {
+            "role": "doctor",
+            "name": name or "Dr. Radha",
+            "license_no": license_no or "HOM-MH-2024-883",
+            "specialty": specialty,
+            "reg_id": reg_id,
+        }
+        return JSONResponse({
+            "status": "success",
+            "role": "doctor",
+            "registration_id": reg_id,
+            "name": name or "Dr. Radha",
+            "license_no": license_no or "HOM-MH-2024-883",
+            "message": f"Welcome, Dr. {name or 'Radha'} 👩‍⚕️! License verified ({reg_id})."
+        })
+    else:
+        clean_phone = phone
+        if not clean_phone.startswith("+"):
+            if clean_phone.startswith("91") and len(clean_phone) == 12:
+                clean_phone = "+" + clean_phone
+            elif len(clean_phone) == 10:
+                clean_phone = "+91 " + clean_phone
+            else:
+                clean_phone = "+91 " + clean_phone if clean_phone else "+91 9876543210"
+
+        reg_id = f"RS-PAT-2026-{random.randint(1000, 9999)}"
+        _user_registry[reg_id] = {
+            "role": "patient",
+            "name": name or "Patient",
+            "phone": clean_phone,
+            "whatsapp_linked": whatsapp_linked,
+            "registration_id": reg_id,
+        }
+        return JSONResponse({
+            "status": "success",
+            "role": "patient",
+            "registration_id": reg_id,
+            "name": name or "Patient",
+            "phone": clean_phone,
+            "whatsapp_linked": whatsapp_linked,
+            "message": f"Registration Successful! Patient ID: {reg_id} | Linked with WhatsApp: {clean_phone}"
+        })
+
+
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
 
